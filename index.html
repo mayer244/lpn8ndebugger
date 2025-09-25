@@ -1,0 +1,1608 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>n8n Debugger ™ - Página Inicial</title>
+    <link rel="icon" type="image/png" href="https://supabase.engenheirodeia.com.br/storage/v1/object/sign/n8ndebugger/logoDebugger.png?token=eyJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJuOG5kZWJ1Z2dlci9sb2dvRGVidWdnZXIucG5nIiwiaWF0IjoxNzU4ODIxMzU5LCJleHAiOjE3OTAzNTczNTl9.PWRsWSSdjCXmzi9EsMXFBb-vL-_byDWyI5aKTdp44xc" />
+    <link rel="shortcut icon" type="image/png" href="https://supabase.engenheirodeia.com.br/storage/v1/object/sign/n8ndebugger/logoDebugger.png?token=eyJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJuOG5kZWJ1Z2dlci9sb2dvRGVidWdnZXIucG5nIiwiaWF0IjoxNzU4ODIxMzU5LCJleHAiOjE3OTAzNTczNTl9.PWRsWSSdjCXmzi9EsMXFBb-vL-_byDWyI5aKTdp44xc" />
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background-color: #1a0a2c; /* Dark background similar to the image */
+            color: #fff;
+            scroll-behavior: smooth;
+        }
+
+        /* Header Styling */
+        .header {
+            position: fixed;
+            width: 100%;
+            background-color: rgba(26, 10, 44, 0.9); /* Slightly transparent dark background */
+            padding: 15px 0;
+            z-index: 1000;
+            transition: top 0.3s ease-in-out;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .header.hidden {
+            top: -80px; /* Adjust based on header height */
+        }
+
+        .header-content {
+            width: 90%;
+            max-width: 1200px;
+            display: flex;
+            justify-content: flex-end; /* Align items to the right */
+            align-items: center;
+        }
+
+        .header nav a {
+            color: #fff;
+            text-decoration: none;
+            margin-left: 30px;
+            font-size: 1.1em;
+            padding: 5px 0;
+            position: relative;
+        }
+
+        .header nav a:hover::after {
+            width: 100%;
+            left: 0;
+        }
+
+        .header nav a::after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 2px;
+            background: #ff5e00; /* Orange highlight */
+            bottom: -5px;
+            left: 50%;
+            transition: width 0.3s ease-in-out, left 0.3s ease-in-out;
+        }
+
+        /* Hero Section Styling */
+        .hero-section {
+            position: relative;
+            height: 90vh; /* Reduzido para subir o conteúdo */
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding-top: 40px; /* Subido mais 10px */
+            padding-bottom: 0px;
+            min-height: 50vh; /* Compactado */
+            overflow: hidden;
+            background: linear-gradient(180deg, #1a0a2c 0%, #4a2a6b 60%, #1a0a2c 100%);
+            background-size: cover;
+            background-position: center;
+            animation: backgroundAnimation 20s infinite alternate;
+        }
+
+        @keyframes backgroundAnimation {
+            0% { background-position: 0% 50%; }
+            100% { background-position: 100% 50%; }
+        }
+
+        .hero-content {
+            max-width: 800px;
+            padding: 20px;
+            position: relative;
+            z-index: 2;
+            margin-top: -280px; /* Sobe apenas o texto */
+        }
+
+        .hero-content h1 {
+            font-size: 2.8em; /* Reduzido para caber em uma linha */
+            margin-bottom: 18px;
+            line-height: 1.2;
+            font-weight: bold;
+        }
+
+        .hero-content p {
+            font-size: 1.05em; /* Reduzido em ~2pt */
+            margin-bottom: 24px;
+            line-height: 1.6;
+        }
+
+        .hero-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-bottom: 25px; /* Espaço entre botões e vídeo */
+        }
+
+        .hero-buttons .btn {
+            display: inline-block;
+            padding: 15px 30px;
+            border-radius: 5px;
+            text-decoration: none;
+            font-weight: bold;
+            font-size: 1.1em;
+            transition: background-color 0.3s ease;
+        }
+
+        .hero-buttons .btn-primary {
+            background-color: #ff5e00; /* Orange button */
+            color: #fff;
+            border: none;
+        }
+
+        .hero-buttons .btn-primary:hover {
+            background-color: #e04e00;
+        }
+
+        .hero-buttons .btn-secondary {
+            background-color: #333;
+            color: #fff;
+            border: 2px solid #555;
+        }
+
+        .hero-buttons .btn-secondary:hover {
+            background-color: #555;
+        }
+
+        /* Feature Section */
+        .feature-section {
+            background-color: #2b1d42;
+            padding: 80px 0;
+            text-align: center;
+        }
+
+        .feature-section h2 {
+            font-size: 2.5em;
+            margin-bottom: 50px;
+        }
+
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 30px;
+            width: 90%;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .feature-card {
+            background-color: #3b2d52;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+            text-align: left;
+            border: 1px solid #5a4b70;
+        }
+
+        .feature-card h3 {
+            font-size: 1.5em;
+            margin-bottom: 15px;
+            color: #ff5e00; /* Orange for headings */
+        }
+
+        .feature-card p {
+            font-size: 1em;
+            line-height: 1.6;
+        }
+
+        /* YouTube Video Section */
+        .video-section {
+            padding: 80px 20px;
+            text-align: center;
+            background-color: #1a0a2c;
+        }
+        .video-frame-wrapper {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .video-container {
+            position: relative;
+            width: 90vw;
+            max-width: 800px;
+            padding-bottom: 56.25%; /* 16:9 aspect ratio */
+            height: 0;
+            overflow: hidden;
+            border-radius: 18px;
+            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+            background: rgba(44, 32, 64, 0.85);
+            border: 2px solid #5a4b70;
+        }
+        .video-container iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border: none;
+            border-radius: 18px;
+        }
+        @media (max-width: 600px) {
+            .video-container {
+                max-width: 100vw;
+            }
+        }
+
+        /* Nova seção de vídeo sobreposta */
+        .video-overlap-section {
+            position: relative;
+            margin-top: -280px; /* Subido mais 20px */
+            z-index: 10;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            pointer-events: auto;
+            background: linear-gradient(180deg, rgba(26,10,44,0) 0%, #1a0a2c 95%);
+        }
+        .video-frame-wrapper {
+            width: 100vw;
+            max-width: 1400px; /* aumente aqui */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .video-container {
+            position: relative;
+            width: 100%;
+            max-width: 1200px; /* aumente aqui */
+            padding-bottom: 56.25%; /* mantém 16:9 */
+            height: 0;
+            overflow: hidden;
+            border-radius: 40px;
+            box-shadow: 0 16px 64px 0 rgba(31, 38, 135, 0.55);
+            background: rgba(44, 32, 64, 0.95);
+            border: 8px solid #5a4b70;
+        }
+        .video-container iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border: none;
+            border-radius: 40px;
+        }
+        @media (max-width: 600px) {
+            .video-frame-wrapper {
+                max-width: 100vw;
+            }
+            .video-container {
+                border-radius: 18px;
+                border-width: 4px;
+            }
+            .video-container iframe {
+                border-radius: 18px;
+            }
+        }
+
+        .hero-title-accent {
+            color: #ff914d !important;
+        }
+
+        /* Remove fundo, borda e sombra */
+        .cta-section {
+          background: transparent !important;
+          box-shadow: none !important;
+          border: none !important;
+        }
+
+        /* Copie o efeito de hover do bloco acima */
+        .cta-section:hover {
+          /* Exemplo: se o bloco acima usa uma sombra ao passar o mouse */
+          box-shadow: 0 0 0 2px #fff, 0 4px 32px 0 rgba(0,0,0,0.15);
+          border: 1px solid #fff;
+          transition: box-shadow 0.3s, border 0.3s;
+        }
+
+        @media (max-width: 700px) {
+          .hero-section {
+            height: auto !important;
+            min-height: unset !important;
+            padding-top: 90px !important; /* espaço para o header */
+            padding-bottom: 24px !important;
+          }
+          .hero-content {
+            margin-top: 0 !important;
+            padding: 10px !important;
+          }
+          .video-overlap-section {
+            margin-top: 24px !important;   /* espaço entre texto e vídeo */
+            padding-top: 0 !important;
+            position: static !important;
+            z-index: auto !important;
+          }
+          .video-frame-wrapper {
+            max-width: 100vw !important;
+            width: 100vw !important;
+            padding: 0 !important;
+          }
+          .video-container {
+            max-width: 100vw !important;
+            width: 100vw !important;
+            border-radius: 0 !important;
+            border-width: 0 !important;
+            margin: 0 auto !important;
+          }
+          .video-container iframe {
+            border-radius: 0 !important;
+          }
+        }
+
+        .toggle-badge.novidade {
+          background-color: #ff914d;
+          color: #fff;
+          font-size: 0.65rem;
+          padding: 2px 8px;
+          border-radius: 4px;
+          margin-left: 8px;
+          font-weight: 600;
+          text-transform: uppercase;
+          letter-spacing: 0.5px;
+        }
+
+        /* Seção de Funcionalidades */
+        .features-section {
+            background-color: #1a0a2c;
+            padding: 80px 20px;
+        }
+
+        .features-container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .features-title {
+            text-align: center;
+            font-size: 2.5em;
+            margin-bottom: 60px;
+            line-height: 1.2;
+        }
+
+        .features-section .feature-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 80px;
+            gap: 60px;
+        }
+
+        .features-section .feature-item:nth-child(even) {
+            flex-direction: row-reverse;
+        }
+
+        .feature-gif {
+            flex: 1;
+            max-width: 500px;
+        }
+
+        .feature-gif img {
+            width: 400px;
+            height: 400px;
+            object-fit: cover;
+            border-radius: 12px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+        }
+
+        .feature-content {
+            flex: 1;
+            max-width: 500px;
+        }
+
+        .feature-content h3 {
+            font-size: 1.8em;
+            margin-bottom: 20px;
+            color: #ff914d;
+        }
+
+        .feature-content p {
+            font-size: 1.1em;
+            line-height: 1.6;
+            color: #e0e0e0;
+        }
+
+        @media (max-width: 768px) {
+            .features-section .feature-item {
+                flex-direction: column !important;
+                gap: 30px;
+                text-align: center;
+            }
+
+            .feature-gif {
+                max-width: 100%;
+            }
+            
+            .pricing-features .feature-item {
+                text-align: left;
+            }
+
+            .feature-gif img {
+                width: 400px;
+                height: 400px;
+            }
+
+            .feature-content {
+                max-width: 100%;
+            }
+
+            .features-title {
+                font-size: 2em;
+            }
+
+            .feature-content h3 {
+                font-size: 1.5em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header class="header" id="myHeader">
+        <div class="header-content">
+            <div class="header-left" style="display: flex; align-items: center; gap: 12px; cursor: pointer;" id="homeLogoName">
+                <img src="https://supabase.engenheirodeia.com.br/storage/v1/object/sign/n8ndebugger/logoDebugger.png?token=eyJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJuOG5kZWJ1Z2dlci9sb2dvRGVidWdnZXIucG5nIiwiaWF0IjoxNzU4ODIxMzU5LCJleHAiOjE3OTAzNTczNTl9.PWRsWSSdjCXmzi9EsMXFBb-vL-_byDWyI5aKTdp44xc" alt="logo do n8n Debugger" style="height: 38px; width: 38px; border-radius: 8px; background: #fff1;" />
+                <span style="font-size: 1.35em; font-weight: 700; letter-spacing: -1px;"><span style="color: #fff;">n8n</span> <span style="color: #ff914d;">Debugger ™</span></span>
+            </div>
+            <nav style="margin-left: auto;">
+                <a href="https://n8n.io/" target="_blank" rel="noopener noreferrer">n8n</a>
+            </nav>
+        </div>
+    </header>
+
+    <main id="main-content">
+        <section class="hero-section">
+            <div class="hero-content">
+                <h1>
+                    <span class="hero-title-main">Debug inteligente para seus fluxos com n8n Debugger</span>
+                </h1>
+                <p>
+                    Identifique, entenda e resolva erros em workflows com a ajuda do n8n Debugger. Solução desenvolvida pela equipe dos Engenheiros de [IA]™ para obter contexto detalhado do erro, sugestões de correção e acelerar seu desenvolvimento.
+                </p>
+                <div class="hero-buttons">
+                    <a href="https://pay.kirvano.com/fcf2af75-c095-4fb4-849d-54a7cb0fcd4c" target="_blank" class="btn btn-primary">Comece Agora</a>
+                    <a href="https://wa.me/5548991462136" target="_blank" class="btn btn-secondary">Fale com vendas</a>
+                </div>
+            </div>
+        </section>
+
+        <!-- Nova seção de vídeo sobreposta -->
+        <section class="video-overlap-section">
+            <div class="video-frame-wrapper">
+                <div class="video-container">
+                    <iframe src="https://www.youtube.com/embed/Gqg_VC7xBzs" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+                </div>
+            </div>
+        </section>
+
+        <!-- Nova seção de cards inspirada na imagem enviada -->
+        <section class="cards-section">
+            <h2 class="cards-title">
+                A maneira mais inteligente e rápida<br>
+                <span class="highlight-orange">de resolver erros em workflows</span>
+            </h2>
+            <div class="cards-grid main-grid custom-main-grid">
+                <div class="card spotlight-card chat-card">
+                    <h3>Chat inteligente para debug</h3>
+                    <p>Converse com a extensão e obtenha respostas precisas sobre o contexto do erro e do seu fluxo. O chat entende o que está acontecendo e te guia para a solução, como mostrado ao lado.</p>
+                    <div class="chat-simulation">
+                        <div class="chat-message right">
+                            <div class="bubble">Por que meu fluxo parou nesse node?</div>
+                        </div>
+                        <div class="chat-message left">
+                            <div class="bubble">O erro foi causado por uma URL inválida no node 'HTTP Request'. Corrija o campo de URL para continuar.</div>
+                        </div>
+                        <div class="chat-message left">
+                            <div class="bubble">Se precisar, posso sugerir exemplos de URLs válidas ou revisar o fluxo completo.</div>
+                        </div>
+                        <div class="chat-message right">
+                            <div class="bubble">Como posso evitar esse tipo de erro no futuro?</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="vertical-cards">
+                    <div class="card spotlight-card agent-card">
+                        <h3><span class="highlight">Resolva problemas em segundos</span><br>com análise automática</h3>
+                        <p>Receba diagnósticos instantâneos e sugestões de correção assim que um erro aparecer. Ganhe velocidade e reduza o tempo parado, focando no que realmente importa: entregar valor.</p>
+                        <a href="#" class="card-btn">Quero mais agilidade →</a>
+                    </div>
+                    <div class="card spotlight-card host-card">
+                        <h3>Salve fluxos e nodes<br><span class="highlight">personalizados com facilidade</span></h3>
+                        <p>Armazene e organize seus fluxos e nodes favoritos para reutilizar sempre que quiser. Praticidade total para criar, salvar e compartilhar automações do seu jeito.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Seção de Funcionalidades -->
+        <section class="features-section">
+            <div class="features-container">
+                <h2 class="features-title">
+                    Funcionalidades que fazem a diferença<br>
+                    <span class="highlight-orange">no seu desenvolvimento de workflows</span>
+                </h2>
+                
+                <div class="feature-item">
+                    <div class="feature-gif">
+                        <img src="https://supabase.engenheirodeia.com.br/storage/v1/object/sign/n8ndebugger/1.png?token=eyJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJuOG5kZWJ1Z2dlci8xLnBuZyIsImlhdCI6MTc1ODgyMDkxMCwiZXhwIjoxNzkwMzU2OTEwfQ.b_PqXg3t8lwz7h04ECLVX5ihuypI7_tRyHj7Y3umqas" alt="Análise com IA em ação" loading="lazy">
+                    </div>
+                    <div class="feature-content">
+                        <h3>Análise com IA</h3>
+                        <p>Nossa inteligência artificial analisa automaticamente seus fluxos de trabalho, identificando padrões, possíveis problemas e oportunidades de otimização. Receba insights detalhados sobre performance, estrutura do fluxo e sugestões de melhorias em tempo real.</p>
+                    </div>
+                </div>
+
+                <div class="feature-item">
+                    <div class="feature-gif">
+                        <img src="https://supabase.engenheirodeia.com.br/storage/v1/object/sign/n8ndebugger/2.png?token=eyJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJuOG5kZWJ1Z2dlci8yLnBuZyIsImlhdCI6MTc1ODgyMDkyMSwiZXhwIjoxNzkwMzU2OTIxfQ.xHxsX_KznelWhwnaUPwAxzox9qhh_TATLEGIRslaZnE" alt="Memória do Assistant" loading="lazy">
+                    </div>
+                    <div class="feature-content">
+                        <h3>Memória do Assistant</h3>
+                        <p>O assistant lembra de todas as suas conversas anteriores, contexto dos seus projetos e soluções já implementadas. Isso permite um atendimento cada vez mais personalizado e eficiente, evitando repetir explicações e acelerando a resolução de problemas.</p>
+                    </div>
+                </div>
+
+                <div class="feature-item">
+                    <div class="feature-gif">
+                        <img src="https://supabase.engenheirodeia.com.br/storage/v1/object/sign/n8ndebugger/3.png?token=eyJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJuOG5kZWJ1Z2dlci8zLnBuZyIsImlhdCI6MTc1ODgyMDkyOSwiZXhwIjoxNzkwMzU2OTI5fQ.WxgoUzaJiSpSoIS-jYvq3S5K4fXh0XH7WLqPUy8rGeA" alt="Geração de Nodes com Assistant" loading="lazy">
+                    </div>
+                    <div class="feature-content">
+                        <h3>Geração de Nodes com o Assistant</h3>
+                        <p>Crie nodes personalizados automaticamente através de comandos simples. O assistant entende suas necessidades e gera código otimizado, configurações específicas e até mesmo fluxos completos, economizando horas de desenvolvimento manual.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Seção de Preços -->
+        <section class="pricing-section">
+            <div class="pricing-container">
+                <h2 class="pricing-title">
+                    Escolha o plano ideal para<br>
+                    <span class="highlight-orange">acelerar seu desenvolvimento</span>
+                </h2>
+                <p class="pricing-subtitle">Comece Agora e evolua conforme sua necessidade</p>
+                
+                <div class="pricing-grid">
+                    <!-- Plano Mensal -->
+                    <div class="pricing-card">
+                        <div class="pricing-header">
+                            <h3>Basic Mensal</h3>
+                            <div class="pricing-price">
+                                <span class="currency">R$</span>
+                                <span class="amount">20</span>
+                                <span class="period">/mês</span>
+                            </div>
+                        </div>
+                        <div class="pricing-features">
+                            <div class="feature-item">
+                                <span class="feature-icon">✓</span>
+                                <span>Debug inteligente de erros</span>
+                            </div>
+                            <div class="feature-item">
+                                <span class="feature-icon">✓</span>
+                                <span>Perguntas sobre fluxos</span>
+                            </div>
+                            <div class="feature-item">
+                                <span class="feature-icon">✓</span>
+                                <span>Salvamento de nodes personalizados</span>
+                            </div>
+                            <div class="feature-item disabled">
+                                <span class="feature-icon">✗</span>
+                                <span>Contexto de conversa</span>
+                            </div>
+                            <div class="feature-item disabled">
+                                <span class="feature-icon">✗</span>
+                                <span>Geração/edição de nodes</span>
+                            </div>
+                        </div>
+                        <button class="pricing-btn">Começar agora</button>
+                    </div>
+
+                    <!-- Plano Trimestral -->
+                    <div class="pricing-card">
+                        <div class="pricing-header">
+                            <h3>Basic Trimestral</h3>
+                            <div class="pricing-price">
+                                <span class="currency">R$</span>
+                                <span class="amount">17</span>
+                                <span class="period">/mês</span>
+                            </div>
+                            <div class="pricing-savings">Economize 15%</div>
+                        </div>
+                        <div class="pricing-features">
+                            <div class="feature-item">
+                                <span class="feature-icon">✓</span>
+                                <span>Debug inteligente de erros</span>
+                            </div>
+                            <div class="feature-item">
+                                <span class="feature-icon">✓</span>
+                                <span>Perguntas sobre fluxos</span>
+                            </div>
+                            <div class="feature-item">
+                                <span class="feature-icon">✓</span>
+                                <span>Salvamento de nodes personalizados</span>
+                            </div>
+                            <div class="feature-item disabled">
+                                <span class="feature-icon">✗</span>
+                                <span>Contexto de conversa</span>
+                            </div>
+                            <div class="feature-item disabled">
+                                <span class="feature-icon">✗</span>
+                                <span>Geração/edição de nodes</span>
+                            </div>
+                        </div>
+                        <button class="pricing-btn">Começar agora</button>
+                    </div>
+
+                    <!-- Plano Anual - Destacado -->
+                    <div class="pricing-card featured">
+                        <div class="featured-badge">Mais Popular</div>
+                        <div class="pricing-header">
+                            <h3>Pro Anual</h3>
+                            <div class="pricing-price">
+                                <span class="currency">R$</span>
+                                <span class="amount">30</span>
+                                <span class="period">/mês</span>
+                            </div>
+                            <div class="pricing-savings">Melhor custo-benefício</div>
+                        </div>
+                        <div class="pricing-features">
+                            <div class="feature-item">
+                                <span class="feature-icon">✓</span>
+                                <span>Debug inteligente de erros</span>
+                            </div>
+                            <div class="feature-item">
+                                <span class="feature-icon">✓</span>
+                                <span>Perguntas sobre fluxos</span>
+                            </div>
+                            <div class="feature-item">
+                                <span class="feature-icon">✓</span>
+                                <span>Salvamento de nodes personalizados</span>
+                            </div>
+                            <div class="feature-item">
+                                <span class="feature-icon">✓</span>
+                                <span>Assistant com memória</span>
+                            </div>
+                            <div class="feature-item">
+                                <span class="feature-icon">✓</span>
+                                <span>Gerar/editar/excluir nodes</span>
+                            </div>
+                            <div class="feature-item premium">
+                                <span class="feature-icon">⭐</span>
+                                <span>Acesso prioritário a novas funcionalidades</span>
+                            </div>
+                        </div>
+                        <button class="pricing-btn featured-btn">Escolher Pro Anual</button>
+                    </div>
+                </div>
+                
+                <div class="pricing-guarantee">
+                    <p>💰 Garantia de 7 dias ou seu dinheiro de volta</p>
+                </div>
+            </div>
+        </section>
+
+        <style>
+        .pricing-section {
+            background: linear-gradient(135deg, #2b1d42 0%, #1a0a2c 100%);
+            padding: 100px 0;
+            position: relative;
+        }
+        
+        .pricing-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+            text-align: center;
+        }
+        
+        .pricing-title {
+            font-size: 2.8em;
+            font-weight: 700;
+            margin-bottom: 16px;
+            color: #fff;
+            line-height: 1.2;
+        }
+        
+        .pricing-subtitle {
+            font-size: 1.2em;
+            color: #e0d6f7;
+            margin-bottom: 60px;
+            line-height: 1.5;
+        }
+        
+        .pricing-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 30px;
+            margin-bottom: 50px;
+        }
+        
+        .pricing-card {
+            background: rgba(44, 32, 64, 0.95);
+            border: 2px solid #5a4b70;
+            border-radius: 20px;
+            padding: 40px 30px;
+            position: relative;
+            transition: all 0.3s ease;
+            box-shadow: 0 8px 32px rgba(31, 38, 135, 0.25);
+        }
+        
+        .pricing-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 40px rgba(31, 38, 135, 0.35);
+        }
+        
+        .pricing-card.featured {
+            border: 2px solid #ff914d;
+            background: rgba(44, 32, 64, 1);
+            transform: scale(1.05);
+            box-shadow: 0 12px 40px rgba(255, 145, 77, 0.25);
+        }
+        
+        .featured-badge {
+            position: absolute;
+            top: -15px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: linear-gradient(90deg, #ff5e00, #ff914d);
+            color: #fff;
+            padding: 8px 24px;
+            border-radius: 20px;
+            font-size: 0.9em;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        .pricing-header {
+            margin-bottom: 30px;
+        }
+        
+        .pricing-card h3 {
+            font-size: 1.5em;
+            font-weight: 700;
+            color: #fff;
+            margin-bottom: 15px;
+        }
+        
+        .pricing-price {
+            display: flex;
+            align-items: baseline;
+            justify-content: center;
+            margin-bottom: 10px;
+        }
+        
+        .currency {
+            font-size: 1.2em;
+            color: #ff914d;
+            font-weight: 600;
+        }
+        
+        .amount {
+            font-size: 3em;
+            font-weight: 700;
+            color: #fff;
+            margin: 0 5px;
+        }
+        
+        .period {
+            font-size: 1.1em;
+            color: #e0d6f7;
+        }
+        
+        .pricing-savings {
+            background: rgba(255, 145, 77, 0.2);
+            color: #ff914d;
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 0.9em;
+            font-weight: 600;
+            display: inline-block;
+        }
+        
+        .pricing-features {
+            text-align: left;
+            margin-bottom: 30px;
+        }
+        
+        .pricing-features .feature-item {
+            display: flex;
+            align-items: flex-start;
+            justify-content: flex-start;
+            margin-bottom: 12px;
+            font-size: 1em;
+            line-height: 1.5;
+            text-align: left;
+        }
+        
+        .pricing-features .feature-icon {
+            width: 20px;
+            margin-right: 12px;
+            font-weight: bold;
+            flex-shrink: 0;
+            text-align: left;
+        }
+        
+        .feature-item:not(.disabled) .feature-icon {
+            color: #4ade80;
+        }
+        
+        .feature-item.disabled {
+            opacity: 0.5;
+        }
+        
+        .feature-item.disabled .feature-icon {
+            color: #ef4444;
+        }
+        
+        .feature-item.premium .feature-icon {
+            color: #fbbf24;
+        }
+        
+        .feature-item span:last-child {
+            color: #e0d6f7;
+        }
+        
+        .pricing-btn {
+            width: 100%;
+            padding: 15px 30px;
+            border: none;
+            border-radius: 10px;
+            font-size: 1.1em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            background: #5a4b70;
+            color: #fff;
+        }
+        
+        .pricing-btn:hover {
+            background: #6d5a85;
+            transform: translateY(-2px);
+        }
+        
+        .featured-btn {
+            background: linear-gradient(90deg, #ff5e00, #ff914d);
+            color: #fff;
+        }
+        
+        .featured-btn:hover {
+            background: linear-gradient(90deg, #ff914d, #ff5e00);
+        }
+        
+        .pricing-guarantee {
+            text-align: center;
+            margin-top: 40px;
+        }
+        
+        .pricing-guarantee p {
+            color: #e0d6f7;
+            font-size: 1.1em;
+            font-weight: 500;
+        }
+        
+        @media (max-width: 768px) {
+            .pricing-title {
+                font-size: 2.2em;
+            }
+            
+            .pricing-grid {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+            
+            .pricing-card.featured {
+                transform: none;
+                order: -1;
+            }
+            
+            .pricing-card {
+                padding: 30px 20px;
+            }
+        }
+        </style>
+
+        <style>
+        .cards-section {
+            width: 100%;
+            background: linear-gradient(135deg, #1a0a2c 60%, #2b1d42 100%);
+            padding: 80px 0 100px 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            position: relative; /* necessário para o ::after */
+            z-index: 2;
+        }
+        .cards-grid {
+            display: flex;
+            flex-direction: row;
+            gap: 40px;
+            max-width: 900px;
+            width: 90%;
+            justify-content: center;
+            margin-bottom: 40px;
+        }
+        .cards-grid-bottom {
+            justify-content: center;
+            margin-bottom: 0;
+        }
+        .cards-grid-bottom .card {
+            margin: 0 auto;
+        }
+        .card {
+            background: linear-gradient(135deg, rgba(44,32,64,0.98) 60%, rgba(80,60,120,0.7) 100%);
+            border: 1.5px solid #5a4b70;
+            border-radius: 28px;
+            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.25);
+            padding: 38px 32px 32px 32px;
+            min-width: 340px;
+            max-width: 400px;
+            flex: 1 1 340px;
+            color: #fff;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+            align-items: flex-start;
+            position: relative;
+            overflow: hidden;
+            transition: box-shadow 0.3s;
+        }
+        .card h3 {
+            font-size: 1.35em;
+            margin-bottom: 18px;
+            font-weight: 700;
+            line-height: 1.3;
+            color: #fff;
+        }
+        .card .highlight {
+            color: #ff914d;
+            font-weight: 800;
+        }
+        .card p {
+            font-size: 1.05em;
+            margin-bottom: 18px;
+            line-height: 1.6;
+            color: #e0d6f7;
+        }
+        .card-btn {
+            display: inline-block;
+            background: linear-gradient(90deg, #6a4cff 0%, #ff5e00 100%);
+            color: #fff;
+            padding: 10px 22px;
+            border-radius: 6px;
+            font-weight: 600;
+            text-decoration: none;
+            font-size: 1em;
+            margin-top: 8px;
+            transition: background 0.2s;
+            box-shadow: 0 2px 8px 0 rgba(255,94,0,0.12);
+        }
+        .card-btn:hover {
+            background: linear-gradient(90deg, #ff5e00 0%, #6a4cff 100%);
+        }
+        .chat-bubble-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-top: 10px;
+        }
+        .chat-bubble {
+            background: rgba(80, 60, 120, 0.25);
+            border-radius: 10px;
+            padding: 10px 16px;
+            color: #fff;
+            font-size: 0.98em;
+            margin-bottom: 0;
+            border: 1px solid #3b2d52;
+            box-shadow: 0 2px 8px 0 rgba(31, 38, 135, 0.10);
+        }
+        /* Spotlight hover effect */
+        .spotlight-card::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            pointer-events: none;
+            border-radius: 28px;
+            background: radial-gradient(circle at var(--x, 50%) var(--y, 50%), rgba(255, 255, 255, 0.18) 0%, rgba(255,255,255,0.08) 40%, transparent 80%);
+            opacity: 0;
+            transition: opacity 0.2s;
+            z-index: 2;
+        }
+        .spotlight-card:hover::before {
+            opacity: 1;
+        }
+        @media (max-width: 1100px) {
+            .cards-grid {
+                flex-direction: column;
+                align-items: center;
+                gap: 32px;
+            }
+            .card {
+                max-width: 95vw;
+                min-width: 0;
+            }
+        }
+        .chat-simulation {
+          display: flex;
+          flex-direction: column;
+          gap: 18px;
+          margin-top: 18px;
+          margin-bottom: 10px;
+          width: 100%;
+          max-width: 380px;
+          margin-left: auto;
+          margin-right: auto;
+        }
+        .chat-message {
+          display: flex;
+          align-items: flex-end;
+        }
+        .chat-message.left {
+          justify-content: flex-start;
+        }
+        .chat-message.right {
+          justify-content: flex-end;
+        }
+        .bubble {
+          max-width: 80%;
+          padding: 12px 18px;
+          border-radius: 18px;
+          font-size: 1em;
+          line-height: 1.5;
+          box-shadow: 0 2px 8px 0 rgba(31, 38, 135, 0.10);
+        }
+        .chat-message.left .bubble {
+          background: #2b1d42;
+          color: #fff;
+          border-bottom-left-radius: 6px;
+          border-top-left-radius: 6px;
+          border-bottom-right-radius: 18px;
+          border-top-right-radius: 18px;
+        }
+        .chat-message.right .bubble {
+          background: #4a2a6b;
+          color: #fff;
+          border-bottom-right-radius: 6px;
+          border-top-right-radius: 6px;
+          border-bottom-left-radius: 18px;
+          border-top-left-radius: 18px;
+        }
+        .cards-title {
+          text-align: center;
+          font-size: 2.4em;
+          font-weight: 700;
+          margin-bottom: 48px;
+          color: #d6d1f8;
+          letter-spacing: -1px;
+        }
+        .cards-title .highlight-orange {
+          color: #ff914d;
+          font-weight: 800;
+        }
+        .cards-grid.main-grid {
+          display: grid;
+          grid-template-columns: 1fr 1fr;
+          gap: 40px;
+          max-width: 900px;
+          width: 90%;
+          margin: 0 auto 40px auto;
+        }
+        .cards-grid.single-row {
+          display: flex;
+          justify-content: center;
+          max-width: 900px;
+          width: 90%;
+          margin: 0 auto;
+        }
+        .cards-grid.single-row .card {
+          width: 100%;
+          max-width: 700px;
+        }
+        @media (max-width: 900px) {
+          .cards-grid.main-grid {
+            grid-template-columns: 1fr;
+            gap: 32px;
+          }
+          .cards-grid.single-row .card {
+            max-width: 95vw;
+          }
+        }
+        .custom-main-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 40px;
+            max-width: 900px;
+            width: 90%;
+            align-items: start;
+        }
+        .chat-card {
+            padding: 38px 32px 32px 32px;
+            box-sizing: border-box;
+            height: 100%;
+            max-width: 400px;
+            width: 100%;
+        }
+        .vertical-cards {
+            display: flex;
+            flex-direction: column;
+            gap: 40px;
+            height: 100%;
+            max-width: 400px;
+            width: 100%;
+        }
+        .agent-card, .host-card {
+            padding: 38px 32px 32px 32px !important;
+            min-height: unset !important;
+            box-sizing: border-box;
+            width: 100%;
+            max-width: 400px;
+            margin: 0;
+            overflow-wrap: break-word;
+            word-break: break-word;
+        }
+        .host-card {
+            max-width: 100%;
+        }
+        .card.spotlight-card {
+            margin: 0;
+        }
+        @media (max-width: 900px) {
+            .custom-main-grid {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                gap: 32px;
+            }
+            .vertical-cards {
+                max-width: 95vw;
+                width: 100%;
+                gap: 32px;
+            }
+            .host-card {
+                max-width: 95vw;
+            }
+            .chat-card, .agent-card, .host-card, .card.spotlight-card {
+                padding: 28px 10px 24px 10px !important;
+            }
+        }
+        .agent-card {
+          display: flex;
+          flex-direction: column;
+          justify-content: center;
+        }
+        .vertical-cards {
+          align-items: flex-start;
+        }
+        .agent-card h3,
+        .agent-card p {
+          text-align: left;
+          width: 100%;
+        }
+        .agent-card, .host-card, .chat-card, .card.spotlight-card {
+            min-height: unset !important;
+            height: auto !important;
+            box-sizing: border-box;
+            padding-bottom: 32px !important;
+            max-width: 500px !important;
+            width: 100% !important;
+        }
+        .cards-grid, .custom-main-grid, .vertical-cards {
+            align-items: stretch !important;
+        }
+        </style>
+        <script>
+        // Spotlight hover effect for cards
+        document.querySelectorAll('.spotlight-card').forEach(card => {
+            card.addEventListener('mousemove', function(e) {
+                const rect = card.getBoundingClientRect();
+                const x = e.clientX - rect.left;
+                const y = e.clientY - rect.top;
+                card.style.setProperty('--x', `${x}px`);
+                card.style.setProperty('--y', `${y}px`);
+            });
+            card.addEventListener('mouseleave', function() {
+                card.style.setProperty('--x', `50%`);
+                card.style.setProperty('--y', `50%`);
+            });
+        });
+        </script>
+
+        <script>
+            let lastScrollTop = 0;
+            const header = document.getElementById("myHeader");
+
+            window.addEventListener("scroll", () => {
+                const currentScrollTop = window.pageYOffset || document.documentElement.scrollTop;
+
+                if (currentScrollTop > lastScrollTop) {
+                    // Scrolling down
+                    header.classList.add("hidden");
+                } else {
+                    // Scrolling up
+                    header.classList.remove("hidden");
+                }
+                lastScrollTop = currentScrollTop <= 0 ? 0 : currentScrollTop; // For Mobile or negative scrolling
+            });
+        </script>
+
+        <!-- Nova sessão hero customizada com fundo GIF e card transparente -->
+        <section class="custom-hero-gif-section">
+            <div class="custom-hero-card">
+                <h1>Não existe erro que o <span style="color: #ff914d;">n8n debugger</span><br>não possa te ajudar a resolver.</h1>
+                <p class="custom-hero-sub">Seja um bug simples ou um problema complexo, conte com a extensão para analisar, sugerir e acelerar sua solução.<br><b>Experimente agora</b> e veja como é fácil automatizar sem medo de errar!</p>
+                <a href="#" class="custom-hero-btn">Comece a Usar Agora</a>
+            </div>
+        </section>
+
+        <style>
+        .custom-hero-gif-section {
+            position: relative;
+            overflow: hidden;
+            background: #1a0a2c !important;
+        }
+        .custom-hero-gif-section::before {
+            content: '';
+            position: absolute;
+            left: 0; top: 0; width: 100%; height: 100%;
+            pointer-events: none;
+            z-index: 2;
+            transition: opacity 0.2s;
+            opacity: 0.7;
+            background: radial-gradient(
+                circle at var(--spot-x, 50%) var(--spot-y, 50%),
+                rgba(255,255,255,0.13) 0px,
+                rgba(255,255,255,0.07) 120px,
+                rgba(255,145,77,0.10) 220px,
+                rgba(26,10,44,0) 400px
+            );
+        }
+        .custom-hero-gif-section.spotlight-active::before {
+            opacity: 1;
+        }
+        .custom-hero-bg-canvas {
+            display: none !important;
+        }
+        </style>
+
+        <!-- Rodapé customizado -->
+        <footer class="custom-footer">
+            <div class="footer-content">
+                <div class="footer-left">
+                    <img src="https://supabase.engenheirodeia.com.br/storage/v1/object/sign/n8ndebugger/logoDebugger.png?token=eyJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJuOG5kZWJ1Z2dlci9sb2dvRGVidWdnZXIucG5nIiwiaWF0IjoxNzU4ODIxMzU5LCJleHAiOjE3OTAzNTczNTl9.PWRsWSSdjCXmzi9EsMXFBb-vL-_byDWyI5aKTdp44xc" alt="logo do n8n debugger" style="height: 22px; width: 22px; border-radius: 6px; background: #fff1; margin-right: 8px;" />
+                    <span style="font-size: 1.08em; font-weight: 600; color: #fff; letter-spacing: -1px;">n8n <span style="color:#ff914d;">debugger</span></span>
+                </div>
+                <div class="footer-center">
+                    <a href="https://n8n.engenheiroia.com.br/webhook/privacy-police" class="footer-link" target="_blank" rel="noopener noreferrer">Política de Privacidade</a>
+                    <a href="#" class="footer-link">Termos de Serviço</a>
+                </div>
+                <div class="footer-right">
+                    <div class="footer-copyright">© 2025 n8n debugger. Todos os direitos reservados.</div>
+                    <div class="footer-disclaimer">n8n debugger não é afiliado ao n8n ou n8n.io. Esta é uma ferramenta não oficial desenvolvida por <span class="footer-author">Engenheiro de [IA]™</span></div>
+                </div>
+            </div>
+        </footer>
+
+        <style>
+        .custom-footer {
+            width: 100vw;
+            background: rgba(26, 10, 44, 0.9);
+            color: #bdbdbd;
+            font-size: 0.92em;
+            border-top: 1px solid #181818;
+            margin-top: 60px;
+            position: relative;
+            min-height: 44px;
+            padding: 0;
+        }
+        .footer-content {
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            justify-content: space-between;
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 32px;
+            height: 44px;
+        }
+        .footer-left {
+            display: flex;
+            align-items: center;
+            min-width: 160px;
+        }
+        .footer-center {
+            display: flex;
+            gap: 28px;
+            justify-content: center;
+            flex: 1 1 auto;
+        }
+        .footer-link {
+            color: #bdbdbd;
+            text-decoration: none;
+            font-size: 0.92em;
+            margin: 0 6px;
+            transition: color 0.2s;
+            position: relative;
+        }
+        .footer-link:hover {
+            color: #ff914d;
+        }
+        .footer-right {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+            min-width: 220px;
+            font-size: 0.90em;
+            line-height: 1.2;
+        }
+        .footer-copyright {
+            color: #bdbdbd;
+            margin-bottom: 1px;
+        }
+        .footer-disclaimer {
+            color: #bdbdbd;
+            font-size: 0.90em;
+        }
+        .footer-author {
+            color: #ff914d;
+            font-weight: 600;
+        }
+        @media (max-width: 900px) {
+            .footer-content {
+                flex-direction: column;
+                align-items: center;
+                height: auto;
+                padding: 10px 8px 8px 8px;
+                gap: 6px;
+            }
+            .footer-right {
+                align-items: center;
+                min-width: 0;
+            }
+            .footer-left {
+                min-width: 0;
+            }
+            .footer-center {
+                gap: 14px;
+            }
+        }
+        </style>
+    </main>
+
+    <div id="dynamic-content" style="display:none;"></div>
+
+    <style>
+.custom-hero-gif-section {
+    position: relative;
+    width: 100vw;
+    min-height: 480px;
+    height: 60vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    z-index: 1;
+    --spot-x: 50%;
+    --spot-y: 50%;
+    /* NOVO GRADIENTE: */
+    background: linear-gradient(180deg, #1a0a2c 0%, #4a2a6b 60%, #1a0a2c 100%);
+    background-size: cover;
+    background-position: center;
+    animation: backgroundAnimation 20s infinite alternate;
+}
+.custom-hero-bg-canvas {
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1;
+    pointer-events: none;
+    display: block;
+    background: radial-gradient(ellipse at 50% 70%, #3a1a3c 0%, #1a0a2c 80%, #12081c 100%);
+    filter: blur(0.5px);
+    /* Removido efeito de zoom/opacidade do scroll */
+    transition: opacity 0.4s cubic-bezier(.4,1.4,.6,1);
+    opacity: 1;
+}
+.custom-hero-gif-section::before {
+    content: '';
+    position: absolute;
+    left: 0; top: 0; width: 100%; height: 100%;
+    pointer-events: none;
+    z-index: 2;
+    transition: opacity 0.2s;
+    opacity: 0.7;
+    background: radial-gradient(
+        circle at var(--spot-x, 50%) var(--spot-y, 50%),
+        rgba(255,255,255,0.13) 0px,
+        rgba(255,255,255,0.07) 120px,
+        rgba(255,145,77,0.10) 220px,
+        rgba(26,10,44,0) 400px
+    );
+}
+.custom-hero-gif-section.spotlight-active::before {
+    opacity: 1;
+}
+.custom-hero-gif-section::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: -1px;
+    height: 180px; /* aumente para um degradê mais longo */
+    pointer-events: none;
+    z-index: 3;
+    background: linear-gradient(
+        180deg,
+        rgba(44,32,64,0) 0%,
+        rgba(44,32,64,0.85) 60%,
+        #1a0a2c 100%
+    );
+}
+@keyframes bgMove {
+    0% { background-position: 0% 50%; }
+    100% { background-position: 100% 50%; }
+}
+.custom-hero-card {
+    position: relative;
+    z-index: 4;
+    background: rgba(44, 32, 64, 0.82);
+    border-radius: 22px;
+    box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.25);
+    border: 1.5px solid #fff2;
+    padding: 48px 32px 38px 32px;
+    max-width: 700px;
+    width: 90vw;
+    text-align: center;
+    backdrop-filter: blur(2.5px);
+}
+.custom-hero-card h1 {
+    font-size: 2.8em;
+    font-weight: 700;
+    margin-bottom: 22px;
+    color: #fff;
+    line-height: 1.15;
+}
+.custom-hero-sub {
+    font-size: 1.25em;
+    color: #e0d6f7;
+    margin-bottom: 32px;
+    line-height: 1.5;
+}
+.custom-hero-try {
+    background: #2b1d42;
+    color: #ff914d;
+    padding: 2px 10px;
+    border-radius: 6px;
+    font-weight: 600;
+    margin-left: 4px;
+}
+.custom-hero-btn {
+    display: inline-block;
+    background: linear-gradient(90deg, #ff5e00 0%, #ff914d 100%);
+    color: #fff;
+    padding: 16px 38px;
+    border-radius: 8px;
+    font-weight: 700;
+    font-size: 1.15em;
+    text-decoration: none;
+    box-shadow: 0 2px 8px 0 rgba(255,94,0,0.12);
+    transition: background 0.2s;
+    border: none;
+}
+.custom-hero-btn:hover {
+    background: linear-gradient(90deg, #ff914d 0%, #ff5e00 100%);
+}
+@media (max-width: 700px) {
+    .custom-hero-card {
+        padding: 28px 10px 24px 10px;
+    }
+    .custom-hero-card h1 {
+        font-size: 2em;
+    }
+    .custom-hero-sub {
+        font-size: 1em;
+    }
+}
+</style>
+<script>
+// Spotlight hover effect para o fundo da seção custom-hero-gif-section
+const heroSection = document.querySelector('.custom-hero-gif-section');
+if (heroSection) {
+    heroSection.addEventListener('mousemove', function(e) {
+        const rect = heroSection.getBoundingClientRect();
+        const x = e.clientX - rect.left;
+        const y = e.clientY - rect.top;
+        heroSection.style.setProperty('--spot-x', `${x}px`);
+        heroSection.style.setProperty('--spot-y', `${y}px`);
+        heroSection.classList.add('spotlight-active');
+    });
+    heroSection.addEventListener('mouseleave', function() {
+        heroSection.style.setProperty('--spot-x', `50%`);
+        heroSection.style.setProperty('--spot-y', `50%`);
+        heroSection.classList.remove('spotlight-active');
+    });
+
+    // Canvas de partículas animadas
+    const heroBgCanvas = heroSection.querySelector('.custom-hero-bg-canvas');
+    
+    // Verificar se o canvas existe antes de usar
+    if (heroBgCanvas) {
+        function handleResize() {
+            heroBgCanvas.width = heroSection.offsetWidth;
+            heroBgCanvas.height = heroSection.offsetHeight;
+            createParticles();
+        }
+
+        // Partículas animadas (explosão)
+        const ctx = heroBgCanvas.getContext('2d');
+        let particles = [];
+        function createParticles() {
+            const w = heroBgCanvas.width;
+            const h = heroBgCanvas.height;
+            particles = [];
+            const count = Math.floor(w / 12) + 30;
+            for (let i = 0; i < count; i++) {
+                const angle = Math.random() * 2 * Math.PI;
+                const radius = 40 + Math.random() * (w/2 - 40);
+                const speed = 0.2 + Math.random() * 0.7;
+                const size = 1.2 + Math.random() * 2.8;
+                const color = `rgba(${220+Math.floor(Math.random()*35)},${80+Math.floor(Math.random()*60)},${30+Math.floor(Math.random()*60)},${0.18+Math.random()*0.22})`;
+                particles.push({
+                    x: w/2,
+                    y: h*0.7,
+                    angle,
+                    radius,
+                    speed,
+                    size,
+                    color,
+                    t: Math.random()*100
+                });
+            }
+        }
+        function drawParticles() {
+            ctx.clearRect(0, 0, heroBgCanvas.width, heroBgCanvas.height);
+            // gradiente de fundo
+            const grad = ctx.createRadialGradient(heroBgCanvas.width/2, heroBgCanvas.height*0.7, 80, heroBgCanvas.width/2, heroBgCanvas.height*0.7, heroBgCanvas.width/1.1);
+            grad.addColorStop(0, '#3a1a3c');
+            grad.addColorStop(0.7, '#1a0a2c');
+            grad.addColorStop(1, '#12081c');
+            ctx.fillStyle = grad;
+            ctx.fillRect(0, 0, heroBgCanvas.width, heroBgCanvas.height);
+            // partículas
+            for (let p of particles) {
+                const px = p.x + Math.cos(p.angle) * p.radius * (0.7 + 0.3*Math.sin(p.t/30));
+                const py = p.y + Math.sin(p.angle) * p.radius * (0.7 + 0.3*Math.sin(p.t/30));
+                ctx.beginPath();
+                ctx.arc(px, py, p.size, 0, 2*Math.PI);
+                ctx.fillStyle = p.color;
+                ctx.shadowColor = p.color;
+                ctx.shadowBlur = 12;
+                ctx.fill();
+                ctx.shadowBlur = 0;
+                p.t += p.speed;
+            }
+        }
+        function animateParticles() {
+            drawParticles();
+            requestAnimationFrame(animateParticles);
+        }
+        window.addEventListener('resize', handleResize);
+        handleResize();
+        animateParticles();
+    }
+}
+</script>
+<style>
+.card, .agent-card, .host-card, .chat-card, .card.spotlight-card {
+    overflow: visible !important;
+}
+.card-btn {
+    max-width: 100%;
+    box-sizing: border-box;
+    margin-left: 0;
+    margin-right: 0;
+    display: block;
+}
+</style>
